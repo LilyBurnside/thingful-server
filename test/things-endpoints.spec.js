@@ -145,10 +145,12 @@ describe('Things Endpoints', function() {
   describe(`GET /api/things/:thing_id`, () => {
     context(`Given no things`, () => {
       beforeEach(() => {
-        db.into('thingful_users').insert(testUsers)
+        //db.into('thingful_users').insert(testUsers)
+        helpers.seedThingsTables(db, testUsers)
       })
 
       it(`responds with 404`, () => {
+        const testUser = helpers.makeUsersArray()[1]
         const thingId = 123456
         return supertest(app)
           .get(`/api/things/${thingId}`)
@@ -200,7 +202,7 @@ describe('Things Endpoints', function() {
       it('removes XSS attack content', () => {
         return supertest(app)
           .get(`/api/things/${maliciousThing.id}`)
-          .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+          .set('Authorization', helpers.makeAuthHeader(testUser))
           .expect(200)
           .expect(res => {
             expect(res.body.title).to.eql(expectedThing.title)
