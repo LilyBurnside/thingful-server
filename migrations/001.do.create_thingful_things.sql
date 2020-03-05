@@ -3,5 +3,5 @@ CREATE TABLE thingful_things (
   image TEXT,
   title TEXT NOT NULL,
   content TEXT,
-  date_created TIMESTAMP DEFAULT now() NOT NULL
+  date_created TIMESTAMPTZ DEFAULT now() NOT NULL
 );

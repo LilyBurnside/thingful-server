@@ -1,6 +1,7 @@
 const xss = require('xss')
 const Treeize = require('treeize')
 
+
 const ThingsService = {
   getAllThings(db) {
     return db
