@@ -1,6 +1,6 @@
 const express = require('express')
 const ThingsService = require('./things-service')
-const { requireAuth } = require('../basic-auth')
+const { requireAuth } = require('../jwt-auth')
 
 const thingsRouter = express.Router()
 

@@ -49,35 +49,29 @@ describe('Things Endpoints', function() {
     protectedEndpoints.forEach(endpoint => {
 
       context(`GET /api/things/:thing_id`, () => {
-        it(`responds with 401 'Missing basic token' when no basic token`, () => {
+        it(`responds with 401 'Missing bearer token' when no bearer token`, () => {
           return supertest(app)
             .get(endpoint.path)
-            .expect(401, { error: `Missing basic token` })
+            .expect(401, { error: `Missing bearer token` })
         })
 
-        it(`responds 401 'Unauthorized request' when no credentials in token`, () => {
-          const noCreds = { user_name: '', password: '' }
+        it(`responds 401 'Unauthorized request' when no invalid JWT secret`, () => {
+          const validUser = testUsers[0]
+          const invalidSecret = 'bad-secret'
           return supertest(app)
             .get(endpoint.path)
-            .set('Authorization', helpers.makeAuthHeader(noCreds))
+            .set('Authorization', helpers.makeAuthHeader(validUser, invalidSecret))
             .expect(401, { error: `Unauthorized request` })
         })
 
-        it(`responds 401 'Unauthorized request' when invalid user`, () => {
-          const invalidCreds = { user_name: 'invalid_user', password: 'invalid_pass' }
+        it(`responds 401 'Unauthorized request' when invalid sub in payload`, () => {
+          const invalidUser = { user_name: 'invalid_user', id: 1 }
           return supertest(app)
             .get(endpoint.path)
-            .set('Authorization', helpers.makeAuthHeader(invalidCreds))
+            .set('Authorization', helpers.makeAuthHeader(invalidUser))
             .expect(401, { error: 'Unauthorized request' })
         })
 
-        it(`responds 401 'Unauthorized request' when invalid password`, () => {
-          const invalidPass = { user_name: testUsers[0].user_name, password: 'nope' }
-          return supertest(app)
-            .get(endpoint.path)
-            .set('Authorization', helpers.makeAuthHeader(invalidPass))
-            .expect(401, { error: `Unauthorized request` })
-        })
       })
     })
   })
